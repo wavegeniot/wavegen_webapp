@@ -76,7 +76,10 @@ export class DashboardComponent {
   waveDataForm = this.formBuilder.group({
     device: new FormControl<string>('-1'),
     type: new FormControl<number>(1),
-    frequency: new FormControl<number>(10),
+    frequency: new FormControl<number>(10, Validators.compose([
+      Validators.required,
+      Validators.pattern('[0-9]*\\.?[0-9]*$')
+    ])),
     amplitude: new FormControl<number>(3)
   })
 
@@ -88,9 +91,8 @@ export class DashboardComponent {
   printWave(amplitude: number, type: number) {
     for (let i = 0; i < 360; i++) {
       this.lineChartData.datasets[0].data[i] =
-      this.generateNumber(i, type, amplitude)
+        this.generateNumber(i, type, amplitude)
     }
-    console.log(this.lineChartData.datasets[0].data)
     this.chart?.update()
   }
 
@@ -102,7 +104,7 @@ export class DashboardComponent {
       return Math.sin(i * Math.PI / 180) * amplitude
     }
     else {
-      return ((i % 180) / 90 -1) * amplitude
+      return ((i % 180) / 90 - 1) * amplitude
     }
   }
 
@@ -133,6 +135,25 @@ export class DashboardComponent {
 
   triggerAlert() {
     this.appendAlert(" Seleccione un dispositivo", "warning")
+  }
+
+  validatePattern(event: any, limit: number, str_regex: any) {
+    const pattern = new RegExp(str_regex);
+
+    if (event.keyCode == 8 || event.keyCode == 46) {
+      return; // Allow the default action for erase keys
+    }
+
+    if (pattern.test(event.key)) {
+      event.preventDefault();
+      return
+    }
+    const value = event.target.value + event.key
+
+    if (value > limit) {
+      event.target.value = limit
+      event.preventDefault()
+    }
   }
 
   appendAlert(message: string, type: string) {

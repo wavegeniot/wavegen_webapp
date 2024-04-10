@@ -19,8 +19,6 @@ export class AuthService {
     this.supabase = createClient(environment.supabase.url, environment.supabase.key)
 
     this.supabase.auth.onAuthStateChange((event, session) => {
-      console.log(event)
-      console.log(session)
       if (session !== null && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION')) {
         this.user.next(session!.user)
         this.router.navigate(['/dashboard'])
