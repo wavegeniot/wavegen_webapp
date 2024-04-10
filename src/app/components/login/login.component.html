@@ -1,0 +1,40 @@
+<div class="wrapper">
+    <div class="logo">
+        <img src="../../../assets/logo.svg" alt="">
+    </div>
+    <div class="text-center mt-4 name">
+        Wavegen-IoT
+    </div>
+
+    <form class="p-3 mt-3" [formGroup]="logInForm">
+        @if (register() === "logUp") {
+        <div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="name" id="name" placeholder="Nombre" formControlName="name">
+        </div>
+        <div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="lastname" id="lastname" placeholder="Apellido" formControlName="lastname">
+        </div>
+        }
+        <div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="email" name="email" id="email" placeholder="Email" formControlName="email">
+        </div>
+        <div class="form-field d-flex align-items-center">
+            <span class="fas fa-key"></span>
+            <input type="password" name="password" id="password" placeholder="Password" formControlName="password">
+        </div>
+
+        <button (click)="handleLogin()" class="btn mt-3">Login</button>
+
+    </form>
+
+    <div class="text-center fs-6">
+        @if (register() == "logIn") {
+        <a (click)="signUp()">¿Desea Registrarse?</a>
+        } @else {
+        <a (click)="signIn()">Ingresar</a>
+        }
+    </div>
+</div>

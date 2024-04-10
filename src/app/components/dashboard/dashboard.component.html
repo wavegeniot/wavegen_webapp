@@ -1,0 +1,76 @@
+<div class="landing-page">
+    <header>
+        <div class="container">
+            <a class="logo">Wave<b>Gen</b>-IoT</a>
+            <ul class="links" (click)="signOut()">
+                <li>Desconectar</li>
+            </ul>
+        </div>
+    </header>
+    <div class="content">
+        <div id="liveAlertPlaceholder"></div>
+        <div class="container">
+
+            <div class="row mb-4"></div>
+
+            <div class="row justify-content-between">
+                <div class="col-3">
+                    <div class="row">
+                        <label for="device">Dispositivo</label>
+                        <select name="device" id="device" class="form-control"
+                            [formControl]="waveDataForm.controls.device">
+                            <option value="-1" [disabled]="1">Selecione un Dispositivo</option>
+                            @for(device of devices(); track device?.['name']){
+                            <option value="{{device?.['id']}}">{{device?.['name']}}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-3 d-flex justify-content-end">
+                    <button (click)='sendData()' class="btn btn-primary bnt-lg">Enviar</button>
+                </div>
+            </div>
+
+            <div class="row mb-4"></div>
+
+            <div class="row justify-content-between">
+                <div class="col-3 ">
+                    <div class="row">
+                        <label for="wave">Tipo de señal</label>
+                        <select name="wave" id="wave" class="form-control" [formControl]="waveDataForm.controls.type">
+                            @for(wave of waves; track wave.id){
+                            <option value={{wave.id}}>{{wave.signal}}</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <label for="frequency">Frecuencia</label>
+                        <input type="number" id="frequency" name="frequency" class="form-control"
+                            [formControl]="waveDataForm.controls.frequency">
+
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="row">
+                        <label for="amplitude">Amplitud</label>
+                        <input type="number" id="amplitude" name="amplitude" class="form-control"
+                            [formControl]="waveDataForm.controls.amplitude">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4"></div>
+
+            <div class="row">
+                <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="'line'"></canvas>
+            </div>
+
+        </div>
+    </div>
+</div>
