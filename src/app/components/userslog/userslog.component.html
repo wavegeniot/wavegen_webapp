@@ -1,0 +1,48 @@
+<div class="landing-page">
+    <header>
+        <div class="container">
+            <div class="row justify-content-between w-100 mb-2">
+                <div class="col-12 col-md-4 text-center">
+                    <a class="logo">Wave<b>Gen</b>-IoT</a>
+                </div>
+                <div class="col-6 col-md-4">
+                    <a class="email" routerLink="/dashboard">{{userEmail()}}</a>
+                </div>
+                <div class="col-4 col-md-3 col-lg-2 text-center">
+                    <ul class="links text-center" (click)="signOut()">
+                        <li>Desconectar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        <div class="container">
+            <div class="row mb-4"></div>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-10">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                @for(header of headers(); track header) {
+                                <th>{{header}}</th>
+                                }
+                            </tr>
+                            @for (row of rows(); track row) {
+                            <tr>
+                                @for (data of [row]; track data['created_at']){
+                                <td>{{data['profiles']['name']}} {{data['profiles']['lastname']}} </td>
+                                <td>{{data['devices']['name']}}</td>
+                                <td>{{data['created_at'] | date:'medium'}}</td>
+                                }
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-1"></div>
+            </div>
+        </div>
+    </div>
+</div>

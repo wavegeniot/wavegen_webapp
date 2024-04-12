@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ChartConfiguration } from "chart.js"
 import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +24,9 @@ export class DashboardComponent {
 
   devices = signal([])
   waveDataChart: number[] = []
+  current_role = signal("")
+  user = signal("")
+  userEmail = signal("")
 
   waves = [
     { id: 1, signal: 'Cuadrada' },
@@ -86,6 +90,15 @@ export class DashboardComponent {
   constructor() {
     this.supabaseService.subscribeChannel('wave_data', 'wave_data')
     this.getDevicesData()
+    const userid = this.authService.currentUser.subscribe((value) => {
+      if (value !== null) {
+        console.log(value)
+        this.user.set(value.id);
+        this.userEmail.set(value.email?.toString() ?? '');
+      }
+    })
+    userid.unsubscribe()
+    this.getCurrentUserRole()
   }
 
   printWave(amplitude: number, type: number) {
@@ -120,6 +133,12 @@ export class DashboardComponent {
       })
   }
 
+  getCurrentUserRole() {
+    this.authService.curren_user_role.subscribe((value) => {
+      this.current_role.set(value)
+    })
+  }
+
   sendData() {
     const id = this.waveDataForm.value.device as string
     const data = this.waveDataForm.value.type + ";" + this.waveDataForm.value.amplitude + ";" + this.waveDataForm.value.frequency as string
@@ -129,28 +148,37 @@ export class DashboardComponent {
       this.triggerAlert()
       return
     }
+
     this.printWave(this.waveDataForm.value.amplitude as number, this.waveDataForm.value.type as number)
     this.supabaseService.updateWaveData({ id, data })
+
+    const user = this.user()
+    const device = id
+    this.supabaseService.insertDevicesLog({ user, device })
   }
+
 
   triggerAlert() {
     this.appendAlert(" Seleccione un dispositivo", "warning")
   }
 
-  validatePattern(event: any, limit: number, str_regex: any) {
+  validatePattern(event: any, limit: number, str_regex: any, decimal: number) {
     const pattern = new RegExp(str_regex);
 
     if (event.keyCode == 8 || event.keyCode == 46) {
       return; // Allow the default action for erase keys
     }
+    
+    const value = event.target.value + event.key
 
-    if (pattern.test(event.key)) {
+    if (!pattern.test(event.key)) {
       event.preventDefault();
       return
     }
-    const value = event.target.value + event.key
 
-    if (value > limit) {
+    console.log(value)
+    
+    if (value > limit*decimal) {
       event.target.value = limit
       event.preventDefault()
     }

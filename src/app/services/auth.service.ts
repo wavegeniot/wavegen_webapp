@@ -13,7 +13,8 @@ export class AuthService {
   private router = inject(Router)
 
   user = new BehaviorSubject<User | null>(null)
-  role = signal('')
+  private role$ = new BehaviorSubject<any>({})
+  curren_user_role = this.role$.asObservable()
 
   constructor() {
     this.supabase = createClient(environment.supabase.url, environment.supabase.key)
@@ -56,10 +57,10 @@ export class AuthService {
   getCurrentUserRole(uuid: string) {
     this.getUserRole(uuid)
       .then((data: any) => {
-        if (data === '1') {
-          this.role.set('ADMIN')
+        if (data.data[0].role === 1) {
+          this.role$.next('ADMIN')
         } else {
-          this.role.set('USER')
+          this.role$.next('USER')
         }
       })
   }
@@ -77,7 +78,4 @@ export class AuthService {
     return this.user.asObservable()
   }
 
-  get currentUserRole() {
-    return this.role()
-  }
 }
